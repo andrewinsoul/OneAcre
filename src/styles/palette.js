@@ -1,0 +1,16 @@
+export const palette = {
+  viridanShade: '#2B7F68',
+  orangeShade: '#CE482D',
+  yellowShade: '#E8B757',
+  cyanShade: '#2F6067',
+  oliveGreenShade: '#2B7F68',
+  faintOliveGreen: 'rgba(43, 127, 104, 0.3)',
+  green: 'green',
+  dirtyWhite: '667085',
+  red: '#E20F0F',
+  black: 'rgba(0,0,0,0.6)',
+  strongBlack: '#000000',
+  white: '#FFFFFF',
+  grey: '#C4C4C4',
+  statusBarWhite: 'rgba(233,233,233,0.4)',
+};
