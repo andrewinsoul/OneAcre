@@ -102,6 +102,16 @@ export const DisplayFarmLands = ({addFarmLand}) => {
     },
   ];
 
+  const ListEmptyComponent = (
+    <View style={styles_.emptyList}>
+      <CustomText style={styles.alignTextCenter}>
+        {
+          'List of Added Farmlands will appear here. \n\nClick the + button below to get started'
+        }
+      </CustomText>
+    </View>
+  );
+
   const OptionsComponent = (
     <View style={styles_.optionsContainer}>
       {optionsArray.map((item, index) => (
@@ -129,10 +139,12 @@ export const DisplayFarmLands = ({addFarmLand}) => {
         <>
           <FlatList
             data={listOfFarm}
+            keyExtractor={(_, index) => index.toString()}
             contentContainerStyle={{
               ...styles.bottomView,
             }}
             style={{height: hp('60%')}}
+            ListEmptyComponent={ListEmptyComponent}
             renderItem={({item}) => {
               return (
                 <View
@@ -206,6 +218,11 @@ const styles_ = StyleSheet.create({
     height: 1,
     width: '92%',
     marginHorizontal: '4%',
+  },
+  emptyList: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: hp('15%'),
   },
   optionsLink: {
     flexDirection: 'row',
