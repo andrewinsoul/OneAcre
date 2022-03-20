@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {palette} from './palette';
 import {useTheme} from './themes';
 
@@ -13,6 +14,9 @@ export const useStyles = () => {
     },
     whiteBackground: {
       backgroundColor: palette.white,
+    },
+    h60p: {
+      height: hp('60%'),
     },
     redBackground: {
       backgroundColor: palette.red,
@@ -271,6 +275,9 @@ export const useStyles = () => {
     'mv-10p': {
       marginVertical: theme.spacing['10p'],
     },
+    'mv-12': {
+      marginVertical: 12,
+    },
     'ml-14p': {
       marginLeft: theme.spacing['14p'],
     },
@@ -512,6 +519,7 @@ export const useStyles = () => {
     textColor: {color: '#0C1231'},
     whiteTextColor: {color: '#FFFFFF'},
     grayTextColor: {color: palette.grey},
+    oliveGreenTextColor: {color: palette.oliveGreenShade},
     blackTextColor: {color: palette.black},
     blackerTextColor: {color: palette.strongBlack},
     textSize12: {fontSize: 12},

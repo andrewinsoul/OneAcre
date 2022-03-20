@@ -83,7 +83,7 @@ export const SaveFarmLandAlert = ({farmSize, onSaveAction, discardAction}) => {
       <View
         style={{
           ...styles.bottomView,
-          height: isKeyboardVisible ? hp('28%') : hp('25%'),
+          height: isKeyboardVisible ? hp('52%') : hp('25%'),
         }}>
         {discardPressed ? (
           <View style={{...styles.spacedContainer, ...styles['mt-10p']}}>

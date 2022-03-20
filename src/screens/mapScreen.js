@@ -1,12 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Dimensions,
-  StyleSheet,
-  ScrollView,
-  BackHandler,
-  Alert,
-} from 'react-native';
+import {View, Dimensions, StyleSheet, BackHandler, Alert} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import MapView, {PROVIDER_GOOGLE, Marker, Polygon} from 'react-native-maps';
 import {mapStyle} from '../constants/mapStyle';
@@ -19,32 +12,38 @@ import {checkIfAreaCanBeCalculated, calculateSizeOfLand} from '../utils';
 import {SaveFarmLandAlert} from '../components/saveFarmLand';
 import {readFromStorage, writeToStorage} from '../utils/localStorage';
 import {DisplayFarmLands} from '../components/displayFarmLands';
+import {FarmDetails} from '../components/farmDetails';
 
 export const MapScreen = () => {
   const styles_ = useStyles();
   let watchId_;
 
   const [geoData, setGeoData] = useState({
-    latitude: 37.8025259,
-    longitude: -122.4351431,
+    latitude: -1.940278,
+    longitude: 29.873888,
     coordinates: [],
   });
 
   const [sizeOfLand, setSizeOfLand] = useState(0);
   const [showSaveFarmModal, setShowSaveFarmModal] = useState(false);
+  const [showFarmDetails, setShowFarmDetails] = useState(false);
   const [showListOfFarm, setShowListOfFarm] = useState(true);
   const [showRecordingControl, setShowRecordingControl] = useState(true);
-
   const [recording, setRecording] = useState(false);
+  const [farmInfo, setFarmInfo] = useState(null);
 
   const handleBackButton = () => {
     if (showListOfFarm) {
       BackHandler.exitApp();
     } else {
+      setShowFarmDetails(false);
       setShowListOfFarm(true);
     }
   };
 
+  /**
+   * @description - this function is called as soon as the user starts recording / surveying the farmland by touching the record button on the screen
+   */
   const handleLandRecording = async () => {
     const recordingStatus = !recording;
     setRecording(recordingStatus);
@@ -79,6 +78,12 @@ export const MapScreen = () => {
     setShowListOfFarm(false);
   };
 
+  const displayFarmLandDetails = farmInfo_ => () => {
+    setFarmInfo(farmInfo_);
+    setShowListOfFarm(false);
+    setShowFarmDetails(true);
+  };
+
   const discardAction = () => {
     setShowRecordingControl(true);
     setShowSaveFarmModal(false);
@@ -91,12 +96,14 @@ export const MapScreen = () => {
         id: `RWA-0${data.length + 1}`,
         label: farmLabel,
         size: sizeOfLand,
+        dateCreated: JSON.stringify(new Date()).split('T')[0].slice(1),
       });
       await writeToStorage('farmLand', data);
       setShowRecordingControl(false);
       setShowSaveFarmModal(false);
       setShowListOfFarm(true);
     } catch (err) {
+      console.log('err');
       Alert.alert('Error', 'An error occured');
     }
   };
@@ -124,6 +131,7 @@ export const MapScreen = () => {
         );
       }
     } catch (error) {
+      console.log('error >>>>>>>>>>>>>>> ', error);
       Alert.alert('Error', 'An error occured');
     }
   };
@@ -211,14 +219,17 @@ export const MapScreen = () => {
           coordinates={
             coordinates.length
               ? coordinates
-              : [{latitude: 37.8025259, longitude: -122.4351431}]
+              : [{latitude: -1.940278, longitude: 29.873888}]
           }
           strokeColor={palette.yellowShade}
           fillColor={palette.faintOliveGreen}
           strokeWidth={1}
         />
       </MapView>
-      {showSaveFarmModal || showListOfFarm || !showRecordingControl ? null : (
+      {showSaveFarmModal ||
+      showFarmDetails ||
+      showListOfFarm ||
+      !showRecordingControl ? null : (
         <View style={styles.mapViewBtnContainer}>
           <ButtonWithIcon name="trash-can-outline" color={palette.black} />
           <ButtonWithIcon
@@ -242,9 +253,17 @@ export const MapScreen = () => {
           />
         </View>
       ) : null}
+      {showFarmDetails ? (
+        <View>
+          <FarmDetails farmInfo={farmInfo} />
+        </View>
+      ) : null}
       {showListOfFarm ? (
         <View>
-          <DisplayFarmLands addFarmLand={addFarmLand} />
+          <DisplayFarmLands
+            displayFarmLandDetails={displayFarmLandDetails}
+            addFarmLand={addFarmLand}
+          />
         </View>
       ) : null}
     </View>
