@@ -32,13 +32,17 @@ export const MapScreen = () => {
 
   const [sizeOfLand, setSizeOfLand] = useState(0);
   const [showSaveFarmModal, setShowSaveFarmModal] = useState(false);
-  const [showListOfFarm, setShowListOfFarm] = useState(false);
+  const [showListOfFarm, setShowListOfFarm] = useState(true);
   const [showRecordingControl, setShowRecordingControl] = useState(true);
 
   const [recording, setRecording] = useState(false);
 
   const handleBackButton = () => {
-    BackHandler.exitApp();
+    if (showListOfFarm) {
+      BackHandler.exitApp();
+    } else {
+      setShowListOfFarm(true);
+    }
   };
 
   const handleLandRecording = async () => {
@@ -154,7 +158,7 @@ export const MapScreen = () => {
   const {latitude, longitude, coordinates} = geoData;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <View
         style={{
           ...styles.mapViewBtnContainer,
@@ -204,15 +208,11 @@ export const MapScreen = () => {
           }}
         />
         <Polygon
-          coordinates={coordinates}
-          // coordinates={[
-          //   {latitude: 37.8025259, longitude: -122.4351431},
-          //   {latitude: 37.7896386, longitude: -122.421646},
-          //   {latitude: 37.7665248, longitude: -122.4161628},
-          //   {latitude: 37.7734153, longitude: -122.4577787},
-          //   {latitude: 37.7948605, longitude: -122.4596065},
-          //   {latitude: 37.8025259, longitude: -122.4351431},
-          // ]}
+          coordinates={
+            coordinates.length
+              ? coordinates
+              : [{latitude: 37.8025259, longitude: -122.4351431}]
+          }
           strokeColor={palette.yellowShade}
           fillColor={palette.faintOliveGreen}
           strokeWidth={1}
@@ -247,7 +247,7 @@ export const MapScreen = () => {
           <DisplayFarmLands addFarmLand={addFarmLand} />
         </View>
       ) : null}
-    </ScrollView>
+    </View>
   );
 };
 
