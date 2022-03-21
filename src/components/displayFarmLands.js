@@ -18,7 +18,7 @@ import {ButtonWithIcon} from './common/button';
 import {CustomText} from './common/text';
 import {readFromStorage} from '../utils/localStorage';
 
-export const DisplayFarmLands = ({addFarmLand}) => {
+export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
   const [listOfFarm, setListOfFarm] = useState([]);
   const [optionsVisible, setOptionsVisible] = useState(false);
   const styles = useStyles();
@@ -147,7 +147,12 @@ export const DisplayFarmLands = ({addFarmLand}) => {
             ListEmptyComponent={ListEmptyComponent}
             renderItem={({item}) => {
               return (
-                <View
+                <TouchableOpacity
+                  onPress={displayFarmLandDetails({
+                    name: item.label,
+                    size: item.size,
+                    dateCreated: item.dateCreated,
+                  })}
                   key={item.id}
                   style={{
                     ...styles.row,
@@ -163,7 +168,7 @@ export const DisplayFarmLands = ({addFarmLand}) => {
                   <CustomText>{`${Number(item.size).toFixed(
                     2,
                   )} Acre`}</CustomText>
-                </View>
+                </TouchableOpacity>
               );
             }}
           />

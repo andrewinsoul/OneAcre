@@ -41,7 +41,8 @@ function calculateAreaInAcre(x1, x2, y1, y2) {
  * @returns {Number} - area or size of the farmland
  */
 export const calculateSizeOfLand = coordinates => {
-  coordinates[coordinates.length - 1] = coordinates[0];
+  const newCords = {...coordinates};
+  newCords[newCords.length - 1] = newCords[0];
   let radius = 6371000;
 
   const diameter = radius * 2;
@@ -51,11 +52,11 @@ export const calculateSizeOfLand = coordinates => {
   const listArea = [];
   // calculate segment x and y in degrees for each point
 
-  const latitudeRef = coordinates[0].latitude;
-  const longitudeRef = coordinates[0].longitude;
-  for (let i = 1; i < coordinates.length; i++) {
-    let latitude = coordinates[i].latitude;
-    let longitude = coordinates[i].longitude;
+  const latitudeRef = newCords[0].latitude;
+  const longitudeRef = newCords[0].longitude;
+  for (let i = 1; i < newCords.length; i++) {
+    let latitude = newCords[i].latitude;
+    let longitude = newCords[i].longitude;
     listY.push(calculateYSegment(latitudeRef, latitude, circumference));
 
     listX.push(
