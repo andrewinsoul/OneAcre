@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -16,7 +17,7 @@ import {useStyles} from '../styles';
 import {palette} from '../styles/palette';
 import {ButtonWithIcon} from './common/button';
 import {CustomText} from './common/text';
-import {readFromStorage} from '../utils/localStorage';
+import {readFromStorage, writeToStorage} from '../utils/localStorage';
 
 export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
   const [listOfFarm, setListOfFarm] = useState([]);
@@ -25,13 +26,14 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
   const toggleOptionsVisibility = () => setOptionsVisible(!optionsVisible);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [farmsToDelete, setFarmsToDelete] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       try {
         const data = await readFromStorage('farmLand');
-        setListOfFarm(data);
+        setListOfFarm(data.map(item => ({...item, touched: false})));
       } catch (err) {
         Alert.alert('Error', 'An error occured while loading data');
       } finally {
@@ -40,6 +42,19 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
     };
     loadData();
   }, [refreshing]);
+
+  const handleDelete = async () => {
+    try {
+      const data = listOfFarm.filter(
+        item => !farmsToDelete.includes(item.label),
+      );
+      setFarmsToDelete([]);
+      await writeToStorage('farmLand', data);
+      setListOfFarm(data);
+    } catch (err) {
+      Alert.alert('Error', 'An error occured');
+    }
+  };
 
   const ListHeaderComponent = (
     <>
@@ -94,7 +109,7 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
       name: 'Delete',
       action: () => {
         setOptionsVisible(false);
-        Alert.alert('DELETE CLICKED', 'delete clicked');
+        handleDelete();
       },
       icon: (
         <MaterialIcon size={24} name="trash-can-outline" color={palette.red} />
@@ -128,6 +143,20 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
       ))}
     </View>
   );
+
+  const markItem = (index, item) => () => {
+    listOfFarm[index] = {
+      ...listOfFarm[index],
+      touched: !listOfFarm[index].touched,
+    };
+    setListOfFarm(listOfFarm);
+    if (farmsToDelete.includes(item)) {
+      setFarmsToDelete(farmsToDelete.filter(farmLabel => item !== farmLabel));
+    } else {
+      setFarmsToDelete([...farmsToDelete, item.label]);
+    }
+  };
+
   return (
     <View
       style={{...styles.whiteBackground, ...styles_.h60, ...styles.bottomView}}>
@@ -145,20 +174,25 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
             }}
             style={{height: hp('60%')}}
             ListEmptyComponent={ListEmptyComponent}
-            renderItem={({item}) => {
+            renderItem={({item, index}) => {
               return (
                 <TouchableOpacity
-                  onPress={displayFarmLandDetails({
-                    name: item.label,
-                    size: item.size,
-                    dateCreated: item.dateCreated,
-                  })}
-                  key={item.id}
+                  // onPress={displayFarmLandDetails({
+                  //   name: item.label,
+                  //   size: item.size,
+                  //   dateCreated: item.dateCreated,
+                  // })}
+                  onPress={displayFarmLandDetails(item)}
+                  onLongPress={markItem(index, item)}
+                  key={index}
                   style={{
                     ...styles.row,
                     ...styles.spacedContainer,
                     ...styles.justifyContentSpaceBtwn,
                     ...styles_.farmListContainer,
+                    backgroundColor: listOfFarm[index].touched
+                      ? 'rgba(44,2,3,0.4)'
+                      : '#F2F9F7',
                   }}>
                   <CustomText style={styles_.idTextColor}>{item.id}</CustomText>
                   <CustomText

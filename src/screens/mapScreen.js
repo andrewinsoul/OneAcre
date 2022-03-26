@@ -92,6 +92,16 @@ export const MapScreen = () => {
   const onSaveAction = async farmLabel => {
     try {
       const data = await readFromStorage('farmLand');
+      const existingFarm = data.filter(
+        item => item.label.toLowerCase() === farmLabel.toLowerCase(),
+      );
+      if (existingFarm.length) {
+        Alert.alert(
+          'Farm Exists',
+          'A farm with that label has already been created, choose a different label',
+        );
+        return;
+      }
       data.push({
         id: `RWA-0${data.length + 1}`,
         label: farmLabel,
