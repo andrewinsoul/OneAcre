@@ -42,6 +42,13 @@ Click [here](https://reactnative.dev/docs/environment-setup) for instructions on
 
 Ensure your codes follow [AirBnB Javascript Styles Guide](https://github.com/airbnb/javascript)
 
+## Features of application
+
+- Users can geotag their faramland and the app automatically calculates the area of the farmland and get its meterological data
+- Users can view the list of added farmlands
+- Users can see a detailed view of a farmland
+- Users can delete one/multiple farmlands. To delete a farmland, longpress that farmland and it will be marked. Tap the options to now delete the marked farmlands
+
 ## Author
 
 - Andrew Okoye
