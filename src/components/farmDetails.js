@@ -12,7 +12,7 @@ import {palette} from '../styles/palette';
 export const FarmDetails = ({farmInfo}) => {
   const [focusHarvest, setFocusHarvest] = useState(true);
   const [focusWeather, setFocusWeather] = useState(false);
-  const {name, size, dateCreated} = farmInfo;
+  const {label: name, size, dateCreated} = farmInfo;
   const styles = useStyles();
   const onFocusWeather = () => {
     setFocusHarvest(false);
