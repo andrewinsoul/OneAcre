@@ -27,6 +27,7 @@ export const useStyles = () => {
     bottomView: {
       bottom: 0,
       borderTopStartRadius: 18,
+      zIndex: 1,
       borderTopEndRadius: 18,
       backgroundColor: '#ffffff',
     },

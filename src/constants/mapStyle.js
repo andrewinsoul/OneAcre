@@ -11,7 +11,7 @@ export const mapStyle = [
     elementType: 'labels',
     stylers: [
       {
-        visibility: 'off',
+        visibility: 'on',
       },
     ],
   },
@@ -19,7 +19,7 @@ export const mapStyle = [
     elementType: 'labels.icon',
     stylers: [
       {
-        visibility: 'off',
+        visibility: 'on',
       },
     ],
   },
@@ -27,7 +27,7 @@ export const mapStyle = [
     elementType: 'labels.text.fill',
     stylers: [
       {
-        color: '#757575',
+        color: '#ffffff',
       },
     ],
   },
@@ -35,7 +35,7 @@ export const mapStyle = [
     elementType: 'labels.text.stroke',
     stylers: [
       {
-        color: '#212121',
+        color: '#ffffff',
       },
     ],
   },
@@ -53,7 +53,7 @@ export const mapStyle = [
     elementType: 'labels.text.fill',
     stylers: [
       {
-        color: '#9e9e9e',
+        color: 'white',
       },
     ],
   },

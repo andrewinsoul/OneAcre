@@ -26,14 +26,16 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
   const toggleOptionsVisibility = () => setOptionsVisible(!optionsVisible);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [markMode, setMarkMode] = useState(false);
   const [farmsToDelete, setFarmsToDelete] = useState([]);
+  let farmsToDelete_;
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       try {
         const data = await readFromStorage('farmLand');
-        setListOfFarm(data.map(item => ({...item, touched: false})));
+        setListOfFarm(data);
       } catch (err) {
         Alert.alert('Error', 'An error occured while loading data');
       } finally {
@@ -87,8 +89,13 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
   );
 
   const refreshHandler = () => {
-    setOptionsVisible(false);
+    touchOptionsHandler();
     setRefreshing(!refreshing);
+  };
+
+  const touchOptionsHandler = () => {
+    setOptionsVisible(false);
+    setMarkMode(false);
   };
 
   const optionsArray = [
@@ -100,7 +107,7 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
     {
       name: 'Send',
       action: () => {
-        setOptionsVisible(false);
+        touchOptionsHandler();
         Alert.alert('SEND CLICKED', 'send clicked');
       },
       icon: <MaterialIcon size={24} name="send" color={palette.black} />,
@@ -108,7 +115,7 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
     {
       name: 'Delete',
       action: () => {
-        setOptionsVisible(false);
+        touchOptionsHandler();
         handleDelete();
       },
       icon: (
@@ -131,6 +138,7 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
     <View style={styles_.optionsContainer}>
       {optionsArray.map((item, index) => (
         <TouchableOpacity
+          key={index}
           onPress={item.action}
           style={
             index === 1
@@ -145,16 +153,20 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
   );
 
   const markItem = (index, item) => () => {
+    setMarkMode(true);
     listOfFarm[index] = {
       ...listOfFarm[index],
       touched: !listOfFarm[index].touched,
     };
     setListOfFarm(listOfFarm);
-    if (farmsToDelete.includes(item)) {
-      setFarmsToDelete(farmsToDelete.filter(farmLabel => item !== farmLabel));
+    if (farmsToDelete.includes(item.label)) {
+      farmsToDelete_ = farmsToDelete.filter(
+        farmLabel => item.label !== farmLabel,
+      );
     } else {
-      setFarmsToDelete([...farmsToDelete, item.label]);
+      farmsToDelete_ = [...farmsToDelete, item.label];
     }
+    setFarmsToDelete(farmsToDelete_);
   };
 
   return (
@@ -177,12 +189,11 @@ export const DisplayFarmLands = ({addFarmLand, displayFarmLandDetails}) => {
             renderItem={({item, index}) => {
               return (
                 <TouchableOpacity
-                  // onPress={displayFarmLandDetails({
-                  //   name: item.label,
-                  //   size: item.size,
-                  //   dateCreated: item.dateCreated,
-                  // })}
-                  onPress={displayFarmLandDetails(item)}
+                  onPress={
+                    markMode
+                      ? markItem(index, item)
+                      : displayFarmLandDetails(item)
+                  }
                   onLongPress={markItem(index, item)}
                   key={index}
                   style={{
