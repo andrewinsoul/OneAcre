@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, Dimensions, StyleSheet, BackHandler, Alert} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
-import MapView, {PROVIDER_GOOGLE, Marker, Polygon} from 'react-native-maps';
+import MapView, {Marker, Polygon} from 'react-native-maps';
 import {mapStyle} from '../constants/mapStyle';
 import {CustomText} from '../components/common/text';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -141,7 +141,6 @@ export const MapScreen = () => {
         );
       }
     } catch (error) {
-      console.log('error >>>>>>>>>>>>>>> ', error);
       Alert.alert('Error', 'An error occured');
     }
   };
@@ -209,9 +208,10 @@ export const MapScreen = () => {
         ) : null}
       </View>
       <MapView
-        provider={PROVIDER_GOOGLE}
         customMapStyle={mapStyle}
-        mapType="satellite"
+        mapType="hybrid"
+        showsTraffic={true}
+        loadingEnabled={true}
         style={styles.map}
         region={{
           latitude: latitude,
